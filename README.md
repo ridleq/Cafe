@@ -73,8 +73,8 @@
 
 
 ## Технологический стек приложения:
-[Python](https://www.python.org/)
-[Django](https://docs.djangoproject.com/)
-[HTML/CSS]
-[SQLite](https://www.sqlite.org/docs.html)
-[pytest](https://docs.pytest.org/en/stable/)
+- [Python](https://www.python.org/)
+- [Django](https://docs.djangoproject.com/)
+- [HTML/CSS](https://www.w3schools.com/)
+- [SQLite](https://www.sqlite.org/docs.html)
+- [pytest](https://docs.pytest.org/en/stable/)
