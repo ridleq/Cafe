@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <form method="get" action="{% url 'order:search' %}" class="col d-flex justify-content-center">
+        <input type="text" name="q" placeholder="Введите ID или статус" value="{{ query }}"
+                style="border: 1px solid rgb(186, 186, 186); border-radius: 0.25rem; padding: 0.375rem 0.75rem;">
+        {% bootstrap_button button_type="submit" content="Поиск" style="margin-left: 20px;" %}
+    </form>
+    <br>
+    {% if orders %}
+    <ul>
+        {% for order in orders %}
+            <article class="mb-5">
+                {% include "includes/order_card.html" %}
+            </article>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p class="col d-flex justify-content-center">Ничего не найдено.</p>
+    {% endif %}
+{% endblock %}

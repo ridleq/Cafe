@@ -1,0 +1,45 @@
+<div class="col d-flex justify-content-center">
+    <div class="card" style="width: 30rem;">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Детали заказа:</h6>
+            <table style="width: 70%;">
+                <tr>
+                    <td>ID:</td>
+                    <td>{{ order.id }}</td>
+                </tr>
+                <tr>
+                    <td>Стол:</td>
+                    <td>{{ order.table_number }}</td>
+                </tr>
+                <tr>
+                    <td>Общая сумма заказа: </td>
+                    <td>{{ order.total_price }}</td>
+                </tr>
+                <tr>
+                    <td>Статус:</td>
+                    <td>{{ order.get_status_display }}</td>
+                </tr>
+                <tr>
+                  <td>Список блюд:</td>
+                  <td>
+                    {% for dish in order.items.all %}
+                     <li> {{ dish.name }} </li>
+                    {% endfor %}
+                  </td>
+              </tr>
+            </table>
+        </h6>
+        <p class="card-text"></p>
+          <div class="mb-2">
+            <a class="btn btn-sm text-muted" href="{% url 'order:status' order.id %}" role="button">
+              Изменить статус
+              </a>
+            <a class="btn btn-sm text-muted" href="{% url 'order:update_order' order.id %}" role="button">
+              Изменить заказ
+            <a class="btn btn-sm text-muted" href="{% url 'order:delete_order' order.id %}" role="button">
+              Удалить заказ
+            </a>
+          </div>
+      </div>
+    </div>
+  </div>

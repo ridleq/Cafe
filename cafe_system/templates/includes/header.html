@@ -1,0 +1,18 @@
+{% load static %}
+<header>
+  <nav class="navbar navbar-light" style="background-color: lightskyblue">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'order:index' %}">
+        Сервис управления заказами
+      </a>
+        <ul class="nav  nav-pills">
+          <div class="btn-group" role="group" aria-label="Basic outlined example">
+            <button type="button" class="btn btn-outline-primary"><a class="text-decoration-none text-reset"
+              href="{% url 'order:add_order' %}">Создать заказ</a></button>
+            <button type="button" class="btn btn-outline-primary"><a class="text-decoration-none text-reset"
+              href="{% url 'order:search' %}">Поиск заказов</a></button>
+          </div>
+        </ul>
+    </div>
+  </nav>
+</header>

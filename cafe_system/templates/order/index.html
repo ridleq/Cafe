@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}
+  Список заказов
+{% endblock %}
+{% block content %}
+  <div class="col d-flex justify-content-center">
+    Общая выручки с оплаченных заказов: {{ total_revenue }} руб.
+  </div>
+  <br>
+  <form method="get" action="" class="col d-flex justify-content-center">
+    <label for="sort">Сортировать по:</label>
+    <select name="sort" id="sort" onchange="this.form.submit()">
+      <option value="id" {% if request.GET.sort == 'id' %}selected{% endif %}>ID</option>
+      <option value="status" {% if request.GET.sort == 'status' %}selected{% endif %}>Статусу</option>
+    </select>
+  </form>
+  <br>
+  {% for order in page_obj %}
+    <article class="mb-5">
+      {% include "includes/order_card.html" %}
+    </article>
+  {% empty %}
+    <tr>
+      <td colspan="2"><center>Нет заказов.</center></td>
+    </tr>
+  {% endfor %}
+  {% include "includes/paginator.html" %}
+{% endblock %}
