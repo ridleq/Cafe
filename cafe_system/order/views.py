@@ -1,23 +1,27 @@
-from django.views.generic import (
-    ListView, CreateView,
-    DeleteView, UpdateView
-)
-from django.views import View
-from django.urls import reverse
-from django.shortcuts import get_object_or_404, render
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.views import View
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import OrderForm, StatusForm
 from .models import Order
 
 
+# Представление для отображения списка заказов на главной странице.
 class IndexListView(ListView):
-    "Запрос всех заказов на главной странице."
+    """
+    IndexListView отображает список всех заказов на главной странице.
+    Реализована пагинация и возможность сортировки.
+    """
     model = Order
     paginate_by = 3
     template_name = 'order/index.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Добавляет в контекст данные о суммарной выручке от оплаченных заказов.
+        """
         context = super().get_context_data(**kwargs)
         context['total_revenue'] = Order.objects.filter(
             status='paid'
@@ -25,6 +29,10 @@ class IndexListView(ListView):
         return context
 
     def get_queryset(self):
+        """
+        Возвращает отсортированный список заказов.
+        Сортировка может быть по ID (по умолчанию) или по статусу.
+        """
         queryset = super().get_queryset()
         sort_by = self.request.GET.get('sort', '-id')
         if sort_by == 'status':
@@ -32,13 +40,21 @@ class IndexListView(ListView):
         return queryset.order_by('-id')
 
 
+# Представление для создания нового заказа.
 class OrderCreateView(CreateView):
-    "Запрос создания заказа."
+    """
+    OrderCreateView позволяет создавать новый заказ.
+    После создания автоматически рассчитывается общая стоимость заказа.
+    """
     model = Order
     form_class = OrderForm
     template_name = 'order/add_order.html'
 
     def form_valid(self, form):
+        """
+        Вызывается при успешной валидации формы.
+        Рассчитывает общую стоимость заказа на основе выбранных блюд.
+        """
         response = super().form_valid(form)
         order = self.object
         total_price = order.items.aggregate(
@@ -49,15 +65,27 @@ class OrderCreateView(CreateView):
         return response
 
     def get_success_url(self):
+        """
+        Возвращает URL для перенаправления после успешного создания заказа.
+        """
         return reverse('order:index')
 
 
+# Представление для обновления существующего заказа.
 class OrderUpdateView(UpdateView):
+    """
+    OrderUpdateView позволяет редактировать существующий заказ.
+    После редактирования автоматически пересчитывается общая стоимость заказа.
+    """
     model = Order
     form_class = OrderForm
     template_name = 'order/add_order.html'
 
     def form_valid(self, form):
+        """
+        Вызывается при успешной валидации формы.
+        Пересчитывает общую стоимость заказа на основе обновленных данных.
+        """
         response = super().form_valid(form)
         order = self.object
         total_price = order.items.aggregate(
@@ -68,34 +96,58 @@ class OrderUpdateView(UpdateView):
         return response
 
     def get_success_url(self):
+        """
+        Возвращает URL для перенаправления после успешного обновления заказа.
+        """
         return reverse('order:index')
 
 
+# Представление для удаления заказа.
 class OrderDeleteView(DeleteView):
-    "Запрос удаления заказа."
+    """
+    OrderDeleteView позволяет удалять существующий заказ.
+    """
     model = Order
     template_name = 'order/add_order.html'
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        Проверяет, существует ли объект заказа перед удалением.
+        """
         get_object_or_404(Order, pk=kwargs['pk'])
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
+        """
+        Возвращает URL для перенаправления после успешного удаления заказа.
+        """
         return reverse('order:index')
 
 
+# Представление для изменения статуса заказа.
 class StatusUpdateView(UpdateView):
+    """
+    StatusUpdateView позволяет изменять статус существующего заказа.
+    """
     model = Order
     form_class = StatusForm
     template_name = 'order/edit_status.html'
 
     def get_success_url(self):
+        """
+        Возвращает URL для перенаправления после успешного изменения статуса.
+        """
         return reverse('order:index')
 
 
+# Представление для поиска заказов.
 class SerachView(View):
+    """
+    SerachView позволяет искать заказы по ID или статусу.
+    """
     template_name = 'order/search.html'
 
+    # Словарь для преобразования статусов.
     status_map = {
         'в ожидании': 'waiting',
         'готово': 'ready',
@@ -103,6 +155,9 @@ class SerachView(View):
     }
 
     def get(self, request, *args, **kwargs):
+        """
+        Обрабатывает GET-запросы для поиска заказов.
+        """
         query = request.GET.get('q', '')
         orders = Order.objects.none()
         if query:

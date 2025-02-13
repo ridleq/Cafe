@@ -3,7 +3,13 @@ from django.db import models
 from .utils import STATUS
 
 
+# Определение модели Order.
 class Order(models.Model):
+    """
+    Модель Order представляет заказ в системе. Она включает
+    информацию о номере стола, связанных блюдах, общей стоимости
+    и статусе заказа.
+    """
     table_number = models.PositiveIntegerField(
         verbose_name='Номер стола',
     )
@@ -26,7 +32,12 @@ class Order(models.Model):
     )
 
 
+# Определение модели Dish.
 class Dish(models.Model):
+    """
+    Модель Dish представляет блюдо в системе. Она включает
+    информацию о названии и цене блюда.
+    """
     name = models.CharField(
         max_length=255,
         verbose_name='Название'
@@ -38,4 +49,9 @@ class Dish(models.Model):
     )
 
     def __str__(self):
+        """
+        Метод, возвращающий строковое представление объекта Dish.
+        Используется для отображения названия блюда в админ-панели
+        и других местах.
+        """
         return self.name
